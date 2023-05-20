@@ -1,36 +1,17 @@
 import React from "react";
-import { api } from "../utils/Api";
 import Card from "./Card";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
-  const [userName, setUserName] = React.useState("");
-  const [userDescription, setUserDescription] = React.useState("");
-  const [userAvatar, setUserAvatar] = React.useState("");
-  const [cards, setCards] = React.useState([]);
-
-  React.useEffect(() => {
-    api
-      .getUserInfo()
-      .then(({ name, about, avatar }) => {
-        setUserName(name);
-        setUserDescription(about);
-        setUserAvatar(avatar);
-      })
-      .catch((err) => {
-        console.log(err); // выведем ошибку в консоль
-      });
-  }, []);
-
-  React.useEffect(() => {
-    api
-      .getInitialCards()
-      .then((cards) => {
-        setCards(cards);
-      })
-      .catch((err) => {
-        console.log(err); // выведем ошибку в консоль
-      });
-  }, []);
+function Main({
+  onEditProfile,
+  onAddPlace,
+  onEditAvatar,
+  onCardClick,
+  cards,
+  onCardLike,
+  onCardDelete,
+}) {
+  const currentUser = React.useContext(CurrentUserContext);
 
   return (
     <main className="content">
@@ -42,17 +23,21 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
             className="profile__avatar-button"
             onClick={onEditAvatar}
           >
-            <img src={userAvatar} alt="Аватар" className="profile__avatar" />
+            <img
+              src={currentUser.avatar}
+              alt="Аватар"
+              className="profile__avatar"
+            />
           </button>
           <div className="profile__container">
-            <h1 className="profile__name"> {userName} </h1>
+            <h1 className="profile__name"> {currentUser.name} </h1>
             <button
               type="button"
               aria-label="Изменить данные профиля"
               className="profile__edit-button"
               onClick={onEditProfile}
             />
-            <p className="profile__description"> {userDescription} </p>
+            <p className="profile__description"> {currentUser.about} </p>
           </div>
         </div>
         <button
@@ -65,7 +50,13 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
       <section className="elements" aria-label="Природа России">
         <ul className="cards">
           {cards.map((card) => (
-            <Card key={card._id} onCardClick={onCardClick} card={card} />
+            <Card
+              key={card._id}
+              onCardClick={onCardClick}
+              card={card}
+              onCardLike={onCardLike}
+              onCardDelete={onCardDelete}
+            />
           ))}
         </ul>
       </section>

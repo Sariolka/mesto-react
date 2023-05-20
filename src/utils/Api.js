@@ -52,28 +52,27 @@ class Api {
     }).then(this.getResponse);
   }
 
-  deleteCard(item) {
+  deleteCard(card) {
     //удалить карточку
-    return fetch(`${this._address}/cards/${item._id}`, {
+    return fetch(`${this._address}/cards/${card._id}`, {
       method: "DELETE",
       headers: this._headers,
     }).then(this.getResponse);
   }
 
-  getLikeCard(item) {
-    //поставить лайк
-    return fetch(`${this._address}/cards/${item._id}/likes`, {
-      method: "PUT",
-      headers: this._headers,
-    }).then(this.getResponse);
-  }
 
-  deleteLikeCard(item) {
-    //удалить лайк
-    return fetch(`${this._address}/cards/${item._id}/likes`, {
-      method: "DELETE",
-      headers: this._headers,
-    }).then(this.getResponse);
+  changeLikeCardStatus(card, isLiked) {
+    if (isLiked) {
+      return fetch(`${this._address}/cards/${card._id}/likes`, {
+        method: "DELETE",
+        headers: this._headers,
+      }).then(this.getResponse);
+    } else {
+      return fetch(`${this._address}/cards/${card._id}/likes`, {
+        method: "PUT",
+        headers: this._headers,
+      }).then(this.getResponse);
+    }
   }
 
   changeAvatar(data) {
