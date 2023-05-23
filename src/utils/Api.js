@@ -60,7 +60,6 @@ class Api {
     }).then(this.getResponse);
   }
 
-
   changeLikeCardStatus(card, isLiked) {
     if (isLiked) {
       return fetch(`${this._address}/cards/${card._id}/likes`, {
