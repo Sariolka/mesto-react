@@ -46,7 +46,7 @@ class Api {
       method: "POST",
       headers: this._headers,
       body: JSON.stringify({
-        name: item.place,
+        name: item.name,
         link: item.link,
       }),
     }).then(this.getResponse);

@@ -2,10 +2,10 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
-import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 import { api } from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
@@ -37,6 +37,7 @@ function App() {
       .getInitialCards()
       .then((cards) => {
         setCards(cards);
+        console.log(cards);
       })
       .catch((err) => {
         console.log(err); // выведем ошибку в консоль
@@ -95,6 +96,17 @@ function App() {
       });
   }
 
+  function handleAddPlaceSubmit(value) {
+    api
+      .addNewCard(value)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
   };
@@ -146,37 +158,12 @@ function App() {
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
         />
-
-        <PopupWithForm
-          name="place"
-          title="Новое место"
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
-          buttonTitle={"Создать"}
           onClose={closeAllPopups}
-        >
-          <label className="popup__fieldset">
-            <input
-              id="place"
-              type="text"
-              name="place"
-              className="popup__input popup__input_form_place"
-              placeholder="Название"
-              minLength={2}
-              maxLength={30}
-              required
-            />
-            <span className="place-error popup__error popup__error-place popup__error_visible"></span>
-            <input
-              id="link"
-              type="url"
-              className="popup__input popup__input_form_link"
-              name="link"
-              required
-              placeholder="Ссылка на картинку"
-            />
-            <span className="link-error popup__error popup__error-link popup__error_visible"></span>
-          </label>
-        </PopupWithForm>
+          onAddPlace={handleAddPlaceSubmit}
+        />
+
         <ImagePopup
           card={selectedCard}
           onClose={closeAllPopups}
