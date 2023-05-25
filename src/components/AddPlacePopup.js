@@ -8,7 +8,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
   React.useEffect(() => {
     setName("");
     setLink("");
-  }, []);
+  }, [isOpen]);
 
   function handleSubmit(e) {
     e.preventDefault();

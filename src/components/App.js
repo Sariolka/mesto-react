@@ -6,7 +6,8 @@ import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
-import { api } from "../utils/Api";
+import DeleteCardPopup from "./DeleteCardPopup";
+import { api } from "../utils/api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function App() {
@@ -16,9 +17,12 @@ function App() {
     React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isOpenCardPopupOpen, setIsOpenCardPopupOpen] = React.useState(false);
+  const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] =
+    React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
+  const [cardForDelete, setCardForDelete] = React.useState({});
 
   React.useEffect(() => {
     api
@@ -66,6 +70,7 @@ function App() {
       .deleteCard(card)
       .then(() => {
         setCards((state) => state.filter((c) => c._id !== card._id));
+        closeAllPopups();
       })
       .catch((err) => {
         console.log(err);
@@ -123,12 +128,17 @@ function App() {
     setIsOpenCardPopupOpen(true);
     setSelectedCard(card);
   };
+  const handleOpenCardDeletePopup = (card) => {
+    setIsDeleteCardPopupOpen(true);
+    setCardForDelete(card);
+  };
 
   const closeAllPopups = () => {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsOpenCardPopupOpen(false);
+    setIsDeleteCardPopupOpen(false);
   };
 
   return (
@@ -142,7 +152,7 @@ function App() {
           onClose={closeAllPopups}
           onCardClick={handleCardClick}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+          onCardDelete={handleOpenCardDeletePopup}
           cards={cards}
         />
         <Footer />
@@ -170,6 +180,13 @@ function App() {
           isOpen={isOpenCardPopupOpen}
         />
       </div>
+
+      <DeleteCardPopup
+        isOpen={isDeleteCardPopupOpen}
+        onClose={closeAllPopups}
+        onDeleteCard={handleCardDelete}
+        card={cardForDelete}
+      />
     </CurrentUserContext.Provider>
   );
 }
