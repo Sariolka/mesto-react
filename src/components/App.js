@@ -32,7 +32,7 @@ function App() {
         console.log(user);
       })
       .catch((err) => {
-        console.log(err); // выведем ошибку в консоль
+        console.log(err);
       });
   }, []);
 
@@ -44,15 +44,12 @@ function App() {
         console.log(cards);
       })
       .catch((err) => {
-        console.log(err); // выведем ошибку в консоль
+        console.log(err);
       });
   }, []);
 
   function handleCardLike(card) {
-    // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some((c) => c._id === currentUser._id);
-
-    // Отправляем запрос в API и получаем обновлённые данные карточки
     api
       .changeLikeCardStatus(card, isLiked)
       .then((newCard) => {
